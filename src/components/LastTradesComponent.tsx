@@ -14,10 +14,8 @@ export class LastTradesComponent extends React.Component<LastTradesComponentProp
           {data.map((d) => (
             <li key={d.trade_id} className="py-4 flex">
               <div className="ml-2">
-                <p className="text-sm font-medium text-gray-900">{d.price}</p>
-                <p className="text-sm text-gray-500">{d.size}</p>
-                <p className="text-sm text-gray-500">
-                  ${(d.size * 0.001 * d.price) / 1000}
+                <p className="text-sm font-medium text-gray-900">
+                  {d.price} - {d.size}
                 </p>
               </div>
             </li>

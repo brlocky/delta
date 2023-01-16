@@ -41,7 +41,7 @@ export const dataSlice = createSlice({
     },
     addLastTrade: (state, action: PayloadAction<ByBitTradeBTCType>) => {
       const payload = { ...action.payload };
-      state.lastTrades = [payload, ...state.lastTrades];
+      state.lastTrades = [payload, ...state.lastTrades].splice(0,50);
     },
   },
 });
