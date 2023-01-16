@@ -1,25 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
 
-function App() {
+import { ChartComponent } from "./components/ChartComponent";
+import { getCandles, getDelta, getLastTrades } from "./redux/slices/data-slice";
+import { useAppSelector } from "./redux/store/hook";
+import { LastTradesComponent } from "./components/LastTradesComponent";
+import MainLayout from "./layouts/MainLayout";
+import { ChartDeltaComponent } from "./components/ChartDeltaComponent";
+
+export function App() {
+  const candles = useAppSelector(getCandles);
+  const lastTrades = useAppSelector(getLastTrades);
+  const delta = useAppSelector(getDelta);
+
+  // useEffect(() => {
+  //   return () => {
+  //   };
+  // }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MainLayout>
+      <>
+        <div className="grid grid-flow-row-dense grid-cols-2 grid-rows-2">
+          <div className="">
+            <ChartComponent data={candles} />
+          </div>
+          <div className="">
+            <ChartDeltaComponent data={delta} />
+          </div>
+          <div>
+            <LastTradesComponent data={lastTrades} />
+          </div>
+        </div>
+      </>
+    </MainLayout>
   );
 }
 
