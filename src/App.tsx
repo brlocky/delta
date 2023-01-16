@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { ChartComponent } from "./components/ChartComponent";
 import { getCandles, getDelta, getLastTrades } from "./redux/slices/data-slice";
