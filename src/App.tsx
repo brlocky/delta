@@ -20,14 +20,14 @@ export function App() {
   return (
     <MainLayout>
       <>
-        <div className="grid grid-flow-row-dense grid-cols-2 grid-rows-2">
-          <div className="">
+        <div className="grid grid-cols-5 gap-4">
+          <div className="col-span-2">
             <ChartComponent data={candles} />
           </div>
-          <div className="">
+          <div className="col-span-2">
             <ChartDeltaComponent data={delta} />
           </div>
-          <div>
+          <div className="h-screen">
             <LastTradesComponent data={lastTrades} />
           </div>
         </div>
