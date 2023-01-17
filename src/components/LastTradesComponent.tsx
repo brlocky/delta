@@ -12,9 +12,7 @@ interface LastTradesRowProps {
 
 const LastTradesRow = (props: LastTradesRowProps) => {
   const { row } = props;
-  const contracts = row.size;
-  const units = Number((contracts * 0.001).toFixed(3));
-  let amount = Number((units * row.price).toFixed(0));
+  let amount = row.size;
 
   let className = "bg-lime-200";
   if (row.side === "Sell") {
@@ -22,6 +20,7 @@ const LastTradesRow = (props: LastTradesRowProps) => {
     className = "bg-orange-200";
   }
 
+  const btc = (row.size / row.price).toFixed(3);
   return (
     <li key={row.trade_id} className={className}>
       <p>
@@ -37,19 +36,16 @@ const LastTradesRow = (props: LastTradesRowProps) => {
           />
         </span>
         <span className="text-sm font-small text-gray-900 float-right">
-          {units} BTC
+          {btc} BTC
         </span>
       </p>
     </li>
   );
 };
 
-
-
 export const LastTradesComponent = () => {
   const [filterAmount, setFilterAmount] = useState<number>(1);
   const lastTrades = useAppSelector(getLastTrades);
-
 
   const updateFilter = (e: React.FormEvent<HTMLSelectElement>) => {
     setFilterAmount(Number(e.currentTarget.value));
@@ -57,7 +53,7 @@ export const LastTradesComponent = () => {
 
   const filterData = (data: ByBitTradeBTCType[]) => {
     return data.filter((e) => {
-      if (e.size * 0.001 >= filterAmount) {
+      if (e.size / e.price >= filterAmount) {
         return e;
       }
       return null;
