@@ -20,7 +20,7 @@ const LastTradesRow = (props: LastTradesRowProps) => {
     className = "bg-orange-200";
   }
 
-  const btc = (row.size / row.price).toFixed(3);
+  const btc = (row.size / row.price).toFixed(5);
   return (
     <li key={row.trade_id} className={className}>
       <p>
@@ -53,7 +53,7 @@ export const LastTradesComponent = () => {
 
   const filterData = (data: ByBitTradeBTCType[]) => {
     return data.filter((e) => {
-      if (e.size / e.price >= filterAmount) {
+      if (e.size >= filterAmount) {
         return e;
       }
       return null;
@@ -84,13 +84,9 @@ export const LastTradesComponent = () => {
           className="float-right text-sm text-gray-400"
         >
           <option value="0"> Filter</option>
-          <option value="0"> &gt; 0</option>
-          <option value="0.001"> &gt; 0.001</option>
-          <option value="0.01"> &gt; 0.01</option>
-          <option value="0.1"> &gt; 0.1</option>
-          <option value="1"> &gt; 1</option>
-          <option value="5"> &gt; 5</option>
-          <option value="10"> &gt; 10</option>
+          <option value="100">100</option>
+          <option value="1000">1000</option>
+          <option value="10000"> 10000</option>
         </select>
       </div>
       <ul className="divide-y divide-gray-200">
