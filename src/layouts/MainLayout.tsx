@@ -129,9 +129,7 @@ export default function MainLayout(props: MainLayoutProps) {
           </Dialog>
         </div>
       </div>
-      <main>
-        {children}
-      </main>
+      <main>{children}</main>
     </div>
   );
 }

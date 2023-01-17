@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ByBitTradeBTCType } from "../types";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { NumericFormat } from "react-number-format";
+import { TitleComponent } from "./TitleComponent";
 
 interface LastTradesRowProps {
   row: ByBitTradeBTCType;
@@ -13,32 +14,17 @@ const LastTradesRow = (props: LastTradesRowProps) => {
   const units = Number((contracts * 0.001).toFixed(3));
   let amount = Number((units * row.price).toFixed(0));
 
-  let classStrong = 50;
-  if (amount > 100) {
-    classStrong = 200;
-  }
-  if (amount > 500) {
-    classStrong = 300;
-  }
-  if (amount > 1000) {
-    classStrong = 400;
-  }
-  if (amount > 10000) {
-    classStrong = 600;
-  }
-
-  let className = "bg-lime";
+  let className = "bg-lime-400";
   if (row.side === "Sell") {
     amount = 0 - amount;
-    className = "bg-orange";
+    className = "bg-orange-400";
   }
-
-  className += "-" + classStrong;
 
   return (
     <li key={row.trade_id} className={className}>
-      <div className="ml-2">
-        <span className="text-sm font-medium text-gray-900">
+      <p>
+        <span className="text-xs font-small text-gray-900">{row.price}</span>
+        <span className="ml-2 text-sm font-small text-gray-900">
           <NumericFormat
             value={amount}
             prefix={"$"}
@@ -51,7 +37,7 @@ const LastTradesRow = (props: LastTradesRowProps) => {
         <span className="text-sm font-small text-gray-900 float-right">
           {units} BTC
         </span>
-      </div>
+      </p>
     </li>
   );
 };
@@ -61,15 +47,15 @@ interface LastTradesComponentProps {
 }
 
 export const LastTradesComponent = (props: LastTradesComponentProps) => {
-  const [filterAmount, setFilterAmount] = useState<number>(0);
+  const [filterAmount, setFilterAmount] = useState<number>(1);
 
   const updateFilter = (e: React.FormEvent<HTMLSelectElement>) => {
     setFilterAmount(Number(e.currentTarget.value));
   };
 
-  const filterData = (data: ByBitTradeBTCType[], qty:number) => {
+  const filterData = (data: ByBitTradeBTCType[]) => {
     return data.filter((e) => {
-      if (e.size >= qty) {
+      if (e.size * 0.001 >= filterAmount) {
         return e;
       }
       return null;
@@ -81,24 +67,38 @@ export const LastTradesComponent = (props: LastTradesComponentProps) => {
 
   return (
     <div>
-      <div className="mt-2 flex items-center text-sm text-gray-500">
-        <CurrencyDollarIcon
-          className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-          aria-hidden="true"
-        />
-        ${last}
-        <select onChange={updateFilter} value={filterAmount}>
-          <option value="0"> &gte; 0</option>
-          <option value="0.001"> &gte; 0.001</option>
-          <option value="0.01"> &gte; 0.01</option>
-          <option value="0.1"> &gte; 0.1</option>
-          <option value="1"> &gte; 1</option>
-          <option value="5"> &gte; 5</option>
-          <option value="10"> &gte; 10</option>
+      <TitleComponent>Last Trades</TitleComponent>
+      <button className="bg-indigo-500">Save changes</button>
+      <div className="mt-2 grid grid-cols-2">
+        <div className="mt-2 flex items-center text-sm text-gray-500">
+          <CurrencyDollarIcon
+            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+            aria-hidden="true"
+          />
+          <NumericFormat
+            decimalSeparator=","
+            value={last}
+            valueIsNumericString
+            displayType="text"
+          />
+        </div>
+        <select
+          onChange={updateFilter}
+          value={filterAmount}
+          className="float-right text-sm text-gray-400"
+        >
+          <option value="0"> Filter</option>
+          <option value="0"> &gt; 0</option>
+          <option value="0.001"> &gt; 0.001</option>
+          <option value="0.01"> &gt; 0.01</option>
+          <option value="0.1"> &gt; 0.1</option>
+          <option value="1"> &gt; 1</option>
+          <option value="5"> &gt; 5</option>
+          <option value="10"> &gt; 10</option>
         </select>
       </div>
       <ul className="divide-y divide-gray-200">
-        {filterData(data, filterAmount).map((d) => (
+        {filterData(data).map((d) => (
           <LastTradesRow row={d} />
         ))}
       </ul>

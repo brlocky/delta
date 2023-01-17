@@ -1,5 +1,6 @@
 import React from "react";
-import { VictoryChart, VictoryBar } from "victory";
+import { DeltaBarComponent } from "./DeltaBarComponent";
+import { TitleComponent } from "./TitleComponent";
 interface ChartDeltaComponentProps {
   data: number[];
 }
@@ -8,36 +9,45 @@ export class ChartDeltaComponent extends React.Component<ChartDeltaComponentProp
   render() {
     let min = 0,
       max = 0,
-      minKey = 0,
-      maxKey = 0;
+      maxDelta = 0;
 
     this.props.data.forEach((d, v) => {
       min = min === 0 || v < min ? v : min;
       max = max === 0 || v > max ? v : max;
-      minKey = minKey === 0 || d < minKey ? d : minKey;
-      maxKey = maxKey === 0 || d > maxKey ? d : maxKey;
+      maxDelta =
+        maxDelta === 0 || Math.abs(d) > maxDelta ? Math.abs(d) : maxDelta;
     });
 
-    const med1 = (max - min) / 4;
-    const med2 = (maxKey - minKey) / 4;
-    min -= med1;
-    max += med1;
-    minKey -= med2;
-    maxKey += med2;
+    const ladder = [];
+    let i = max;
+    while (i >= min) {
+      const delta = this.props.data[i] || 0;
+      const normalized = Number(
+        ((Math.abs(delta) / maxDelta) * 100).toFixed(0)
+      );
+      ladder.push({
+        value: i,
+        delta,
+        normalized,
+      });
+      i = i - 0.5;
+    }
 
     return (
       <>
-        <VictoryChart domain={{ x: [min, max], y: [minKey, maxKey] }}>
-          <VictoryBar
-            horizontal
-            style={{
-              data: { fill: "#c43a31" },
-            }}
-            data={this.props.data}
-            x="1"
-            y="0"
-          />
-        </VictoryChart>
+        <TitleComponent>Delta per Level</TitleComponent>
+
+        {ladder.map((k) => {
+          return (
+            <>
+              <DeltaBarComponent
+                value={k.value}
+                normalized={k.normalized}
+                delta={k.delta}
+              />
+            </>
+          );
+        })}
       </>
     );
   }

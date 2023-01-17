@@ -1,5 +1,6 @@
 import { createChart, ColorType } from "lightweight-charts";
 import React, { useEffect, useRef } from "react";
+import { TitleComponent } from "./TitleComponent";
 
 let mainSeries = null;
 export const ChartComponent = (props) => {
@@ -26,10 +27,10 @@ export const ChartComponent = (props) => {
       height: 500,
       grid: {
         vertLines: {
-          color: 'rgba(197, 203, 206, 0.7)',
+          color: "rgba(197, 203, 206, 0.7)",
         },
         horzLines: {
-          color: 'rgba(197, 203, 206, 0.7)',
+          color: "rgba(197, 203, 206, 0.7)",
         },
       },
       timeScale: {
@@ -57,11 +58,16 @@ export const ChartComponent = (props) => {
     if (data.length === 0) {
       return;
     }
-    const last = data[data.length-1];
+    const last = data[data.length - 1];
     mainSeries.update(last);
   }, [props.data]);
 
-  return <div ref={chartContainerRef} />;
+  return (
+    <>
+      <TitleComponent>Chart</TitleComponent>
+      <div ref={chartContainerRef} />
+    </>
+  );
 };
 
 // const chart = createChart(document.body, { width: 400, height: 300 });
