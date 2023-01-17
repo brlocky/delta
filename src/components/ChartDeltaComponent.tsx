@@ -55,14 +55,13 @@ export const ChartDeltaComponent = () => {
 
       {ladder.map((k) => {
         return (
-          <div key={k.value}>
-            <DeltaBarComponent
-              value={k.value}
-              normalized={k.normalized}
-              delta={k.delta}
-              selected={k.value === currentPrice}
-            />
-          </div>
+          <DeltaBarComponent
+            key={k.value}
+            value={k.value}
+            normalized={k.normalized}
+            delta={k.delta}
+            selected={k.value === currentPrice}
+          />
         );
       })}
     </>

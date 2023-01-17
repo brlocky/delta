@@ -16,10 +16,10 @@ const LastTradesRow = (props: LastTradesRowProps) => {
   const units = Number((contracts * 0.001).toFixed(3));
   let amount = Number((units * row.price).toFixed(0));
 
-  let className = "bg-lime-400";
+  let className = "bg-lime-200";
   if (row.side === "Sell") {
     amount = 0 - amount;
-    className = "bg-orange-400";
+    className = "bg-orange-200";
   }
 
   return (
