@@ -1,9 +1,13 @@
 import { createChart, ColorType } from "lightweight-charts";
 import React, { useEffect, useRef } from "react";
 import { TitleComponent } from "./TitleComponent";
+import { useAppSelector } from "../redux/store/hook";
+import { getCandles } from "../redux/slices/data-slice";
 
 let mainSeries = null;
-export const ChartComponent = (props) => {
+export const ChartComponent = () => {
+  const candles = useAppSelector(getCandles);
+
   const backgroundColor = "white";
   const lineColor = "#2962FF";
   const textColor = "black";
@@ -42,7 +46,6 @@ export const ChartComponent = (props) => {
     // Create the Main Series (Candlesticks)
     mainSeries = chart.addCandlestickSeries();
     // Set the data for the Main Series
-    // serie.setData([]);
 
     window.addEventListener("resize", handleResize);
 
@@ -54,13 +57,13 @@ export const ChartComponent = (props) => {
   }, [backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
 
   useEffect(() => {
-    const data = JSON.parse(JSON.stringify(props.data));
+    const data = JSON.parse(JSON.stringify(candles));
     if (data.length === 0) {
       return;
     }
     const last = data[data.length - 1];
     mainSeries.update(last);
-  }, [props.data]);
+  }, [candles]);
 
   return (
     <>
@@ -69,18 +72,3 @@ export const ChartComponent = (props) => {
     </>
   );
 };
-
-// const chart = createChart(document.body, { width: 400, height: 300 });
-// const lineSeries = chart.addLineSeries();
-// lineSeries.setData([
-//     { time: '2019-04-11', value: 80.01 },
-//     { time: '2019-04-12', value: 96.63 },
-//     { time: '2019-04-13', value: 76.64 },
-//     { time: '2019-04-14', value: 81.89 },
-//     { time: '2019-04-15', value: 74.43 },
-//     { time: '2019-04-16', value: 80.01 },
-//     { time: '2019-04-17', value: 96.63 },
-//     { time: '2019-04-18', value: 76.64 },
-//     { time: '2019-04-19', value: 81.89 },
-//     { time: '2019-04-20', value: 74.43 },
-// ]);

@@ -3,6 +3,8 @@ import { ByBitTradeBTCType } from "../types";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { NumericFormat } from "react-number-format";
 import { TitleComponent } from "./TitleComponent";
+import { getLastTrades } from "../redux/slices/data-slice";
+import { useAppSelector } from "../redux/store/hook";
 
 interface LastTradesRowProps {
   row: ByBitTradeBTCType;
@@ -42,12 +44,12 @@ const LastTradesRow = (props: LastTradesRowProps) => {
   );
 };
 
-interface LastTradesComponentProps {
-  data: ByBitTradeBTCType[];
-}
 
-export const LastTradesComponent = (props: LastTradesComponentProps) => {
+
+export const LastTradesComponent = () => {
   const [filterAmount, setFilterAmount] = useState<number>(1);
+  const lastTrades = useAppSelector(getLastTrades);
+
 
   const updateFilter = (e: React.FormEvent<HTMLSelectElement>) => {
     setFilterAmount(Number(e.currentTarget.value));
@@ -62,13 +64,11 @@ export const LastTradesComponent = (props: LastTradesComponentProps) => {
     });
   };
 
-  const { data } = props;
-  const last: string = data[0]?.price.toString() || "-";
+  const last: string = lastTrades[0]?.price.toString() || "-";
 
   return (
     <div>
       <TitleComponent>Last Trades</TitleComponent>
-      <button className="bg-indigo-500">Save changes</button>
       <div className="mt-2 grid grid-cols-2">
         <div className="mt-2 flex items-center text-sm text-gray-500">
           <CurrencyDollarIcon
@@ -98,8 +98,10 @@ export const LastTradesComponent = (props: LastTradesComponentProps) => {
         </select>
       </div>
       <ul className="divide-y divide-gray-200">
-        {filterData(data).map((d) => (
-          <LastTradesRow row={d} />
+        {filterData(lastTrades).map((d) => (
+          <div key={d.trade_id}>
+            <LastTradesRow row={d} />
+          </div>
         ))}
       </ul>
     </div>
