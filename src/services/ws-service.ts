@@ -1,50 +1,58 @@
 import PubSub from "pubsub-js";
 
-
-export interface IWSService {
-  close(): void;
-}
-
 interface WSServiceProps {
   url: string;
   topic: string;
 }
 
 export class WSService<T> {
-  protected ws: WebSocket;
+  protected topic: string;
+  protected url: string;
 
   constructor(props: WSServiceProps) {
-    const { url } = props;
-    this.ws = new WebSocket(url);
+    const { url, topic } = props;
+    this.url = url;
+    this.topic = topic;
+  }
 
-    this.ws.onopen = () => {
+  public connect() {
+    const ws = new WebSocket(this.url);
+    ws.onopen = () => {
       // connection opened
       console.log("WebSocket Client Connected");
       setInterval(() => {
-        this.ws.send(JSON.stringify({ op: "ping" }));
-      }, 30000);
-      this.ws.send(JSON.stringify({ op: "ping" }));
-      this.ws.send(JSON.stringify({ op: "subscribe", args: [props.topic] }));
+        ws.send(JSON.stringify({ op: "ping" }));
+      }, 20000);
+
+      ws.send(JSON.stringify({ op: "subscribe", args: [this.topic] }));
     };
 
-    this.ws.onmessage = (e) => {
+    ws.onmessage = (e) => {
       const { topic, data } = JSON.parse(e.data);
 
-      if (topic !== props.topic) {
+      if (topic !== this.topic) {
         return;
       }
 
-      data.map((data: T) => PubSub.publish('ws-data', data));
+      data.map((data: T) => PubSub.publish("ws-data", data));
     };
 
-    this.ws.onerror = (e) => {
+    ws.onerror = (e) => {
       // an error occurred
+      console.error("onerror");
       console.error(e);
+      ws.close();
     };
 
-    this.ws.onclose = (e) => {
+    ws.onclose = (e) => {
       // connection closed
+      console.log("onclose");
       console.error(e.code, e.reason);
+      const self = this;
+      setTimeout(function () {
+        console.log("re-subscribing !");
+        self.connect();
+      }, 1000);
     };
   }
 
