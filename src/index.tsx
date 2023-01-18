@@ -19,7 +19,7 @@ const root = ReactDOM.createRoot(
 const url = "wss://stream.bybit.com/realtime";
 const topic = "trade.BTCUSD";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-new WSService<ByBitTradeBTCType>({ url, topic });
+new WSService<ByBitTradeBTCType>({ url, topic }).connect();
 new ChartBarDataService({ store, time: 1 });
 
 root.render(

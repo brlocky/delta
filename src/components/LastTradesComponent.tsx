@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { ByBitTradeBTCType } from "../types";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { NumericFormat } from "react-number-format";
@@ -10,7 +10,7 @@ interface LastTradesRowProps {
   row: ByBitTradeBTCType;
 }
 
-const LastTradesRow = (props: LastTradesRowProps) => {
+const LastTradesRow = memo((props: LastTradesRowProps) => {
   const { row } = props;
   let amount = row.size;
 
@@ -41,7 +41,8 @@ const LastTradesRow = (props: LastTradesRowProps) => {
       </p>
     </li>
   );
-};
+});
+
 
 export const LastTradesComponent = () => {
   const [filterAmount, setFilterAmount] = useState<number>(1);
