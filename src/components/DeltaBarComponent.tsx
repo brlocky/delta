@@ -16,8 +16,8 @@ export const DeltaBarComponent = (props: DeltaBarComponentProps) => {
   };
   const getValueClassName = () => {
     const { selected } = props;
-    const bgcolor = selected ? "bg-blue-200" : "";
-    return `text-xs font-small text-gray-900 col-span-1 align-middle ${bgcolor}`;
+    const bgcolor = selected ? "bg-green-500 text-white	" : "text-gray-900";
+    return `text-xs font-small col-span-1 align-middle ${bgcolor}`;
   };
 
   return (
