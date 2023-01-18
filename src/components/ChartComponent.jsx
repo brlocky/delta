@@ -1,4 +1,4 @@
-import { createChart, ColorType } from "lightweight-charts";
+import { createChart, ColorType } from "lightweight-charts/lib/prod/src";
 import React, { useEffect, useRef } from "react";
 import { TitleComponent } from "./TitleComponent";
 import { useAppSelector } from "../redux/store/hook";
