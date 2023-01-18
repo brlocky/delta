@@ -44,7 +44,8 @@ export const ChartComponent = () => {
     });
 
     // Create the Main Series (Candlesticks)
-    mainSeries = chart.addCandlestickSeries();
+    mainSeries = chart.addClusterSeries();
+    // mainSeries = chart.addCandlestickSeries();
     // Set the data for the Main Series
 
     window.addEventListener("resize", handleResize);
@@ -57,10 +58,13 @@ export const ChartComponent = () => {
   }, [backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
 
   useEffect(() => {
-    const data = JSON.parse(JSON.stringify(candles));
-    if (data.length === 0) {
+
+    if (candles.length === 0) {
       return;
     }
+
+    const data = JSON.parse(JSON.stringify(candles));
+
     const last = data[data.length - 1];
     mainSeries.update(last);
   }, [candles]);

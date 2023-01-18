@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
-import { ByBitTradeBTCType, CandleBarType } from "../../types";
+import { ByBitTradeBTCType, CandleClusterType } from "../../types";
 
 // Define a type for the slice state
 interface DataState {
-  candles: CandleBarType[];
+  candles: CandleClusterType[];
   lastTrades: ByBitTradeBTCType[];
   delta: number[];
 }
@@ -30,7 +30,7 @@ export const dataSlice = createSlice({
       const newDelta = Number((currentDelta + amount).toFixed(2));
       state.delta[price] = newDelta;
     },
-    addData: (state, action: PayloadAction<CandleBarType>) => {
+    addData: (state, action: PayloadAction<CandleClusterType>) => {
       const payload = { ...action.payload };
       const index = state.candles.findIndex((r) => r.time === payload.time);
       if (index === -1) {

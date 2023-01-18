@@ -13,10 +13,18 @@ export type ByBitTradeBTCType = {
   price: number;
 };
 
-export type CandleBarType = {
+export type TradeType = {
+  price: number;
+  delta: number;
+};
+
+export type CandleClusterType = {
   time: number;
   open: number;
   close: number;
   high: number;
   low: number;
+  trades: TradeType[];
+  startTime:number;
+  endTime:number;
 };
