@@ -43,7 +43,6 @@ const LastTradesRow = memo((props: LastTradesRowProps) => {
   );
 });
 
-
 export const LastTradesComponent = () => {
   const [filterAmount, setFilterAmount] = useState<number>(1);
   const lastTrades = useAppSelector(getLastTrades);
@@ -53,6 +52,9 @@ export const LastTradesComponent = () => {
   };
 
   const filterData = (data: ByBitTradeBTCType[]) => {
+    if (filterAmount === 0) {
+      return data;
+    }
     return data.filter((e) => {
       if (e.size >= filterAmount) {
         return e;
@@ -60,6 +62,8 @@ export const LastTradesComponent = () => {
       return null;
     });
   };
+
+  const data = filterData(lastTrades);
 
   const last: string = lastTrades[0]?.price.toString() || "-";
 
@@ -91,7 +95,7 @@ export const LastTradesComponent = () => {
         </select>
       </div>
       <ul className="divide-y divide-gray-200">
-        {filterData(lastTrades).map((d) => (
+        {data.map((d) => (
           <div key={d.trade_id}>
             <LastTradesRow row={d} />
           </div>

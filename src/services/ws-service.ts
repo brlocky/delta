@@ -34,7 +34,7 @@ export class WSService<T> {
         return;
       }
 
-      data.map((data: T) => PubSub.publish("ws-data", data));
+      PubSub.publish("ws-data", data);
     };
 
     ws.onerror = (e) => {

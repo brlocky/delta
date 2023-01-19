@@ -1,7 +1,7 @@
 import PubSub from "pubsub-js";
 import moment from "moment";
 import { ByBitTradeBTCType, CandleClusterType, TradeType } from "../types";
-import { addData, addDelta, addLastTrade } from "../redux/slices/data-slice";
+import { addCandle, addLastTrade } from "../redux/slices/data-slice";
 import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 
 interface IChartBarDataServiceProps {
@@ -10,7 +10,7 @@ interface IChartBarDataServiceProps {
 }
 
 export class ChartBarDataService {
-  protected lastPrice = 0;
+  protected lastPrice = -1;
   protected store: ToolkitStore;
   protected candle: CandleClusterType;
   protected delta: Map<number, number>;
@@ -25,15 +25,15 @@ export class ChartBarDataService {
 
     this.delta = new Map();
     this.candle = this.openCandle();
-    PubSub.subscribe("ws-data", (message: string, data: ByBitTradeBTCType) => {
+    PubSub.subscribe("ws-data", (message: string, data: ByBitTradeBTCType[]) => {
       this.store.dispatch(addLastTrade(data));
-      this.store.dispatch(addDelta(data));
       this.updateCandle(data);
     });
   }
 
-  private updateCandle(data: ByBitTradeBTCType) {
-    const { price: p, side, size } = data;
+  private updateCandle(data: ByBitTradeBTCType[]) {
+    const lastCandle = data[data.length-1];
+    const { price: p, side, size } = lastCandle;
     const candle = this.candle;
     // init candle with current price
     if (candle.open === -1) {
@@ -60,14 +60,14 @@ export class ChartBarDataService {
     // keep record of last price to update on candle close
     this.lastPrice = p;
 
-    this.store.dispatch(addData(candle));
+    this.store.dispatch(addCandle(candle));
   }
 
   private openCandle() {
-    const lastPrice = this.lastPrice || -1;
+    const lastPrice = this.lastPrice;
 
     // Candle Close
-    if (this.candle && this.candle.open !== -1) {
+    if (this.candle && this.candle.open > 0) {
       const trades: TradeType[] = [];
       // Add Delta
       this.delta.forEach((v, k) => {
@@ -76,12 +76,12 @@ export class ChartBarDataService {
           delta: v,
         });
       });
-      
+
       // Sort asc by price
       trades.sort((a, b) => b.price - a.price);
       this.candle.trades = trades;
       this.candle.endTime = moment().unix();
-      this.store.dispatch(addData(this.candle));
+      this.store.dispatch(addCandle(this.candle));
 
       this.delta.clear();
     }
@@ -93,13 +93,13 @@ export class ChartBarDataService {
       close: lastPrice,
       high: lastPrice,
       low: lastPrice,
-      startTime: moment().unix(),
-      endTime: moment().unix(),
+      startTime: date,
+      endTime: date,
       trades: [],
     };
 
     if (lastPrice !== -1) {
-      this.store.dispatch(addData(candle));
+      this.store.dispatch(addCandle(candle));
     }
 
     return candle;

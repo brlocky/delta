@@ -13,9 +13,6 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-// const url = "wss://stream.bybit.com/contract/usdt/public/v3";
-// const topic = "publicTrade.BTCUSDT";
-
 const url = "wss://stream.bybit.com/realtime";
 const topic = "trade.BTCUSD";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

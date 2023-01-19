@@ -22,15 +22,7 @@ export const dataSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    addDelta: (state, action: PayloadAction<ByBitTradeBTCType>) => {
-      const { price, size, side } = { ...action.payload };
-      const currentDelta = state.delta[price] || 0;
-      // Ensure we don't lose type number to string
-      const amount: number = side === "Sell" ? 0 - size : Math.abs(size);
-      const newDelta = Number((currentDelta + amount).toFixed(2));
-      state.delta[price] = newDelta;
-    },
-    addData: (state, action: PayloadAction<CandleClusterType>) => {
+    addCandle: (state, action: PayloadAction<CandleClusterType>) => {
       const payload = { ...action.payload };
       const index = state.candles.findIndex((r) => r.time === payload.time);
       if (index === -1) {
@@ -39,14 +31,24 @@ export const dataSlice = createSlice({
         state.candles.splice(index, 1, payload);
       }
     },
-    addLastTrade: (state, action: PayloadAction<ByBitTradeBTCType>) => {
-      const payload = { ...action.payload };
-      state.lastTrades = [payload, ...state.lastTrades].splice(0,500);
+    addLastTrade: (state, action: PayloadAction<ByBitTradeBTCType[]>) => {
+      const payload = [...action.payload];
+
+      payload.forEach((p) => {
+        const { price, size, side } = p;
+        const currentDelta = state.delta[price] || 0;
+        // Ensure we don't lose type number to string
+        const amount: number = side === "Sell" ? 0 - size : Math.abs(size);
+        const newDelta = Number((currentDelta + amount).toFixed(2));
+        state.delta[price] = newDelta;
+      });
+
+      state.lastTrades = [...payload, ...state.lastTrades].splice(0, 500);
     },
   },
 });
 
-export const { addDelta, addData, addLastTrade } = dataSlice.actions;
+export const { addCandle, addLastTrade } = dataSlice.actions;
 
 // // Other code such as selectors can use the imported `RootState` type
 // export const isData = (state: RootState) => !!state.data.data;
