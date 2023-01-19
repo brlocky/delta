@@ -5,7 +5,7 @@ interface WSServiceProps {
   topic: string;
 }
 
-export class WSService<T> {
+export class WSService {
   protected topic: string;
   protected url: string;
   protected pingClock:number;

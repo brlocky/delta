@@ -7,7 +7,6 @@ import { WSService } from "./services/ws-service";
 import { ChartBarDataService } from "./services/data-service";
 import { Provider } from "react-redux";
 import { store } from "./redux/store/store";
-import { ByBitTradeBTCType } from "./types";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,8 +15,8 @@ const root = ReactDOM.createRoot(
 const url = "wss://stream.bybit.com/realtime";
 const topic = "trade.BTCUSD";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-new WSService<ByBitTradeBTCType>({ url, topic }).connect();
-new ChartBarDataService({ store, time: 1 });
+new WSService({ url, topic }).connect();
+new ChartBarDataService({ store, time: 10 });
 
 root.render(
   <React.StrictMode>

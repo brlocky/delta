@@ -19,12 +19,12 @@ export class ChartBarDataService {
     const { time, store } = props;
     this.store = store;
 
+    this.delta = new Map();
+    this.candle = this.openCandle();
     setInterval(() => {
       this.candle = this.openCandle();
     }, time * 1000 - new Date().getMilliseconds());
 
-    this.delta = new Map();
-    this.candle = this.openCandle();
     PubSub.subscribe("ws-data", (message: string, data: ByBitTradeBTCType[]) => {
       this.store.dispatch(addLastTrade(data));
       this.updateCandle(data);

@@ -24,18 +24,21 @@ export const dataSlice = createSlice({
   reducers: {
     addCandle: (state, action: PayloadAction<CandleClusterType>) => {
       const payload = { ...action.payload };
+
       const index = state.candles.findIndex((r) => r.time === payload.time);
       if (index === -1) {
         state.candles = [...state.candles, payload];
       } else {
         state.candles.splice(index, 1, payload);
       }
+
+      // Only 100 candles
+      state.candles.splice(0, state.candles.length - 100);
     },
     addLastTrade: (state, action: PayloadAction<ByBitTradeBTCType[]>) => {
       const payload = [...action.payload];
 
-      payload.forEach((p) => {
-        const { price, size, side } = p;
+      payload.forEach(({price, size, side}) => {
         const currentDelta = state.delta[price] || 0;
         // Ensure we don't lose type number to string
         const amount: number = side === "Sell" ? 0 - size : Math.abs(size);
@@ -43,7 +46,11 @@ export const dataSlice = createSlice({
         state.delta[price] = newDelta;
       });
 
-      state.lastTrades = [...payload, ...state.lastTrades].splice(0, 500);
+
+      state.lastTrades = [...payload, ...state.lastTrades];
+
+      // Only 500 last trades
+      state.lastTrades.splice(500, state.lastTrades.length - 500);
     },
   },
 });
