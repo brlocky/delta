@@ -8,11 +8,13 @@ interface WSServiceProps {
 export class WSService<T> {
   protected topic: string;
   protected url: string;
+  protected pingClock:number;
 
   constructor(props: WSServiceProps) {
     const { url, topic } = props;
     this.url = url;
     this.topic = topic;
+    this.pingClock = 0;
   }
 
   public connect() {
@@ -20,7 +22,8 @@ export class WSService<T> {
     ws.onopen = () => {
       // connection opened
       console.log("WebSocket Client Connected");
-      setInterval(() => {
+      window.clearInterval(this.pingClock);
+      this.pingClock = window.setInterval(() => {
         ws.send(JSON.stringify({ op: "ping" }));
       }, 20000);
 
