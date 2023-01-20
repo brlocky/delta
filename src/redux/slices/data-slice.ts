@@ -33,7 +33,7 @@ export const dataSlice = createSlice({
       }
 
       // Only 100 candles
-      state.candles.splice(0, state.candles.length - 100);
+      // state.candles.splice(0, state.candles.length - 100);
     },
     addLastTrade: (state, action: PayloadAction<ByBitTradeBTCType[]>) => {
       const payload = [...action.payload];

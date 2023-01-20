@@ -1,5 +1,5 @@
 import { createChart, ColorType } from "lightweight-charts/lib/prod/src";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TitleComponent } from "./TitleComponent";
 import { useAppSelector } from "../redux/store/hook";
 import { getCandles } from "../redux/slices/data-slice";
@@ -15,7 +15,7 @@ export const ChartComponent = () => {
   const areaBottomColor = "rgba(41, 98, 255, 0.28)";
 
   const chartContainerRef = useRef();
-  // const [mainSeries, setMainSeries] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -58,12 +58,17 @@ export const ChartComponent = () => {
   }, [backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]);
 
   useEffect(() => {
-
     if (candles.length === 0) {
       return;
     }
 
     const data = JSON.parse(JSON.stringify(candles));
+
+    if (!isLoaded) {
+      setIsLoaded(true);
+      data.map((d) => mainSeries.update(d));
+      return;
+    }
 
     const last = data[data.length - 1];
     mainSeries.update(last);

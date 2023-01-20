@@ -80,7 +80,6 @@ export class ChartBarDataService {
       // Sort asc by price
       trades.sort((a, b) => b.price - a.price);
       this.candle.trades = trades;
-      this.candle.endTime = moment().unix();
       this.store.dispatch(addCandle(this.candle));
 
       this.delta.clear();
@@ -93,8 +92,6 @@ export class ChartBarDataService {
       close: lastPrice,
       high: lastPrice,
       low: lastPrice,
-      startTime: date,
-      endTime: date,
       trades: [],
     };
 
