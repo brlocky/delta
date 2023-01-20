@@ -63,12 +63,11 @@ export const ChartComponent = () => {
     }
 
     const data = JSON.parse(JSON.stringify(candles));
-
     if (!isLoaded) {
       setIsLoaded(true);
-      data.map((d) => mainSeries.update(d));
+      mainSeries.setData(data);
       return;
-    }
+    } 
 
     const last = data[data.length - 1];
     mainSeries.update(last);

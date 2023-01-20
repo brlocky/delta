@@ -22,8 +22,8 @@ const topic = "trade.BTCUSD";
 new WSService({ url, topic }).connect();
 new ChartBarDataService({ store, time: 10 });
 
-const from = moment().hour(-6).unix();
-const klineUrl = `https://api.bybit.com/v2/public/kline/list?symbol=BTCUSD&interval=5&from=${from}`;
+const from = moment().hour(-3).unix();
+const klineUrl = `https://api.bybit.com/v2/public/kline/list?symbol=BTCUSD&interval=1&from=${from}`;
 axios
   .get(klineUrl)
   .then((res) => {
