@@ -29,6 +29,7 @@ export const dataSlice = createSlice({
       if (index === -1) {
         state.candles = [...state.candles, payload];
       } else {
+        payload.trades = [...state.candles[index].trades];
         state.candles.splice(index, 1, payload);
       }
 
@@ -38,14 +39,28 @@ export const dataSlice = createSlice({
     addLastTrade: (state, action: PayloadAction<ByBitTradeBTCType[]>) => {
       const payload = [...action.payload];
 
-      payload.forEach(({price, size, side}) => {
+      payload.forEach(({ price, size, side }) => {
         const currentDelta = state.delta[price] || 0;
         // Ensure we don't lose type number to string
         const amount: number = side === "Sell" ? 0 - size : Math.abs(size);
         const newDelta = Number((currentDelta + amount).toFixed(2));
         state.delta[price] = newDelta;
-      });
 
+        // Update current candle delta
+        const lastCandle = { ...state.candles[state.candles.length - 1] };
+        if (lastCandle) {
+          const index = lastCandle.trades.findIndex((t) => t.price === price);
+          if (index === -1) {
+            lastCandle.trades.push({
+              price,
+              delta: amount,
+            });
+          } else {
+            lastCandle.trades.splice(index, 1, { price, delta: newDelta });
+          }
+          state.candles.splice(state.candles.length - 1, 1, lastCandle);
+        }
+      });
 
       state.lastTrades = [...payload, ...state.lastTrades];
 

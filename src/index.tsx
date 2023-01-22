@@ -8,7 +8,7 @@ import { ChartBarDataService } from "./services/data-service";
 import { Provider } from "react-redux";
 import { store } from "./redux/store/store";
 import axios from "axios";
-import { ByBitKlineType, ByBitTradeBTCType, CandleClusterType } from "./types";
+import { ByBitKlineType, CandleClusterType } from "./types";
 import moment from "moment";
 import { addCandle } from "./redux/slices/data-slice";
 
@@ -22,23 +22,32 @@ const topic = "trade.BTCUSD";
 new WSService({ url, topic }).connect();
 new ChartBarDataService({ store, time: 10 });
 
-const from = moment().hour(-3).unix();
-const klineUrl = `https://api.bybit.com/v2/public/kline/list?symbol=BTCUSD&interval=1&from=${from}`;
+const timeUrl = `https://api.bybit.com/v2/public/time`;
+
+// Loading initial data
 axios
-  .get(klineUrl)
+  .get(timeUrl)
   .then((res) => {
-    res.data.result.map((r: ByBitKlineType) => {
-      const candle: CandleClusterType = {
-        time: r.open_time,
-        open: Number(r.open),
-        close: Number(r.close),
-        high: Number(r.high),
-        low: Number(r.low),
-        trades: [],
-      };
-      // console.log(candle);
-      store.dispatch(addCandle(candle));
-    });
+    const timeNow = res.data.time_now;
+    const from = moment.unix(timeNow).subtract({ hours: 3 }).unix();
+    const klineUrl = `https://api.bybit.com/v2/public/kline/list?symbol=BTCUSD&interval=1&from=${from}`;
+    axios
+      .get(klineUrl)
+      .then((res) => {
+        res.data.result.map((r: ByBitKlineType) => {
+          const candle: CandleClusterType = {
+            time: r.open_time,
+            open: Number(r.open),
+            close: Number(r.close),
+            high: Number(r.high),
+            low: Number(r.low),
+            trades: [],
+          };
+          // console.log(candle);
+          store.dispatch(addCandle(candle));
+        });
+      })
+      .catch(console.error);
   })
   .catch(console.error);
 

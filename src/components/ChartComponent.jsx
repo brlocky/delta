@@ -28,7 +28,7 @@ export const ChartComponent = () => {
         textColor,
       },
       width: chartContainerRef.current.clientWidth,
-      height: 500,
+      height: window.innerHeight - 200,
       grid: {
         vertLines: {
           color: "rgba(197, 203, 206, 0.7)",
@@ -66,8 +66,17 @@ export const ChartComponent = () => {
     if (!isLoaded) {
       setIsLoaded(true);
       mainSeries.setData(data);
+      // mainSeries.setData([
+      //   {
+      //     time: 1665332520,
+      //     open: 5,
+      //     high: 12.9,
+      //     low: 3.2,
+      //     close: 12,
+      //   },
+      // ]);
       return;
-    } 
+    }
 
     const last = data[data.length - 1];
     mainSeries.update(last);

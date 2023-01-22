@@ -9,7 +9,7 @@ export function App() {
   return (
     <MainLayout>
       <>
-        <div className="grid grid-cols-5 gap-4">
+        {/* <div className="grid grid-cols-5 gap-4">
           <div className="col-span-2">
             <ChartComponent />
           </div>
@@ -19,6 +19,10 @@ export function App() {
           <div className="h-screen">
             <LastTradesComponent />
           </div>
+        </div> */}
+
+        <div className="grid gap-4">
+          <ChartComponent />
         </div>
       </>
     </MainLayout>
